@@ -6,3 +6,9 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm):
         model = AbstractUser
         fields = UserCreationForm.Meta.fields + ('age', 'date_of_birth', 'image',)
+        
+        
+class CustomUserChangeForm(UserChangeForm):
+    class Meta(UserChangeForm):
+        model = AbstractUser
+        fields = UserChangeForm.Meta.fields + ('age', 'date_of_birth', 'image',)
