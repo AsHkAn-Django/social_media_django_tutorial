@@ -7,6 +7,6 @@ from django.contrib.auth import get_user_model
 class SignUpCreateView(generic.CreateView):
     form_class = CustomUserCreationForm
     template_name = "accounts/signup.html"
-    success_url = reverse_lazy("myApp:home")
+    success_url = reverse_lazy("login")
 
 
