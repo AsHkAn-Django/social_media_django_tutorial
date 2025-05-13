@@ -22,6 +22,10 @@ class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
         fields = ('email', 'image', 'age', 'date_of_birth', 'first_name', 'last_name')
+        widgets = {
+            'date_of_birth': forms.DateInput(attrs={'type': 'date'}) 
+        }
+        
         
     def clean_email(self):
         email = self.cleaned_data.get('email')
