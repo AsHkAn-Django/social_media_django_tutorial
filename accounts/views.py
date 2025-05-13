@@ -13,14 +13,20 @@ class SignUpCreateView(generic.CreateView):
 
 User = get_user_model()
 
+
 class UsersListView(LoginRequiredMixin, generic.ListView):
     model = User
     template_name = "accounts/users.html"
     context_object_name = 'users'
 
 
-class CLASS_NAME(LoginRequiredMixin, generic.TemplateView):
-    template_name = "accounts/profile.html"
+
+class ProfileDetailView(LoginRequiredMixin, generic.DetailView):
+    model = User
+    template_name = "accounts/profile_detail.html"
+
+
+
 
     
 

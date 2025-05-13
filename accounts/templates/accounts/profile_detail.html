@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="card shadow-lg rounded-4">
+                <div class="card-body text-center">
+
+                    {% if user.image %}
+                        <img src="{{ user.image.url }}" alt="Profile Picture" class="rounded-circle mb-3" width="120" height="120">
+                    {% else %}
+                        <i class="bi bi-person-circle display-1 text-muted mb-3"></i>
+                    {% endif %}
+
+                    <h3 class="card-title">{{ user.username }}</h3>
+
+                    <hr>
+
+                    <div class="text-start px-4">
+                        <p><strong>Username:</strong> {{ user.username }}</p>
+                        <p><strong>First Name:</strong> {{ user.first_name }}</p>
+                        <p><strong>Date of Birth:</strong> {{ user.date_of_birth }}</p>
+                        <p><strong>Age:</strong> {{ user.age }}</p>
+                    </div>
+                        
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock content %}
