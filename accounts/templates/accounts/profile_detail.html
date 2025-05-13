@@ -24,6 +24,10 @@
                         <p><strong>Date of Birth:</strong> {{ user.date_of_birth }}</p>
                         <p><strong>Age:</strong> {{ user.age }}</p>
                     </div>
+                   
+                    {% if user.pk == request.user.pk %}
+                        <a href="{% url 'accounts:profile_update' user.pk %}" class="btn btn-outline-info">Edit</a>
+                    {% endif %}
                         
                 </div>
             </div>

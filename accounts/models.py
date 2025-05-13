@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+from django.urls import reverse
 
 
 class CustomUser(AbstractUser):
@@ -11,6 +12,8 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
     
+    def get_absolute_url(self):
+        return reverse('accounts:profile_detail', kwargs={'pk': self.pk})
     
 class Follow(models.Model):
     follower = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="followings", on_delete=models.CASCADE)

@@ -26,7 +26,6 @@ class CustomUserChangeForm(UserChangeForm):
             'date_of_birth': forms.DateInput(attrs={'type': 'date'}) 
         }
         
-        
     def clean_email(self):
         email = self.cleaned_data.get('email')
         user_email = CustomUser.objects.exclude(id=self.instance.id).filter(email=email)
