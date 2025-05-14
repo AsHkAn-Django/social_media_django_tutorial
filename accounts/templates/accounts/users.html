@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <div class="container my-4">
@@ -6,8 +7,17 @@
 
     <div class="list-group">
         {% for user in users %}
-            <a href="{% url 'accounts:profile_detail' user.pk %}" class="list-group-item list-group-item-action">
-                <i class="bi bi-person-circle me-2"></i>{{ user.username }}
+            <a href="{% url 'accounts:profile_detail' user.pk %}" class="list-group-item list-group-item-action d-flex align-items-center">
+                
+                {% if user.image %}
+                    <img src="{{ user.image.url }}" alt="{{ user.username }}'s profile picture"
+                         class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                {% else %}
+                    <img src="{% static 'images/default.jpg' %}" alt="default profile picture"
+                         class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                {% endif %}
+                
+                {{ user.username }}
             </a>
         {% endfor %}
     </div>
