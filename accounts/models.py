@@ -14,6 +14,7 @@ class CustomUser(AbstractUser):
     
     def get_absolute_url(self):
         return reverse('accounts:profile_detail', kwargs={'pk': self.pk})
+
     
     
 class Follow(models.Model):
@@ -24,3 +25,4 @@ class Follow(models.Model):
     def __str__(self):
         return f"{self.follower.username} followed {self.user.username}"
     
+        

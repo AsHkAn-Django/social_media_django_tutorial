@@ -2,19 +2,23 @@
 {% load static %}
 
 {% block content %}
-<div class="container my-4">
+<div class="container my-4" style="max-width: 500px;">  <!-- Limit overall width -->
     <h3 class="mb-4">List of Users</h3>
 
     <div class="list-group">
         {% for user in users %}
-            <div class="list-group-item d-flex justify-content-between align-items-center">
+            <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3">
                 <div class="d-flex align-items-center">
                     {% if user.image %}
-                        <img src="{{ user.image.url }}" alt="{{ user.username }}'s profile picture"
-                             class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                        <a href="{% url 'accounts:profile_detail' user.pk %}">
+                            <img src="{{ user.image.url }}" alt="{{ user.username }}'s profile picture"
+                                 class="rounded-circle me-2" style="width: 36px; height: 36px; object-fit: cover;">
+                        </a>
                     {% else %}
-                        <img src="{% static 'images/default.jpg' %}" alt="default profile picture"
-                             class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                        <a href="{% url 'accounts:profile_detail' user.pk %}">
+                            <img src="{% static 'images/default.jpg' %}" alt="default profile picture"
+                                 class="rounded-circle me-2" style="width: 36px; height: 36px; object-fit: cover;">
+                        </a>
                     {% endif %}
 
                     <a href="{% url 'accounts:profile_detail' user.pk %}" class="text-decoration-none text-dark fw-medium">
@@ -24,7 +28,11 @@
 
                 {% if user.pk != request.user.pk %}
                     <a href="{% url 'accounts:follow_user' user.pk %}" class="btn btn-sm btn-outline-primary">
-                        Follow
+                        {% if user.id in following_ids %}
+                            Unfollow
+                        {% else %}
+                            Follow
+                        {% endif %}                            
                     </a>
                 {% endif %}
             </div>

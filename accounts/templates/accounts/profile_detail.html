@@ -27,6 +27,15 @@
                    
                     {% if user.pk == request.user.pk %}
                         <a href="{% url 'accounts:profile_update' user.pk %}" class="btn btn-outline-info">Edit</a>
+                    {% else %}
+                    <a href="{% url 'accounts:follow_user' user.pk %}" class="btn btn-sm btn-outline-primary">
+                        
+                        {% if user.id in following_ids %}
+                            Unfollow
+                        {% else %}
+                            Follow
+                        {% endif %}                            
+                    </a>
                     {% endif %}
                         
                 </div>

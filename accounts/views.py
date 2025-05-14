@@ -22,13 +22,23 @@ class UsersListView(LoginRequiredMixin, generic.ListView):
     model = User
     template_name = "accounts/users.html"
     context_object_name = 'users'
-
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['following_ids'] = Follow.objects.filter(follower=self.request.user).values_list('user_id', flat=True)
+        return context
+    
 
 
 class ProfileDetailView(LoginRequiredMixin, generic.DetailView):
     model = User
     template_name = "accounts/profile_detail.html"
     context_object_name = 'user'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['following_ids'] = Follow.objects.filter(follower=self.request.user).values_list('user_id', flat=True)
+        return context
 
 
 
