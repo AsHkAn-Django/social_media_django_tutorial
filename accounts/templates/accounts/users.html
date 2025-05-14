@@ -7,18 +7,27 @@
 
     <div class="list-group">
         {% for user in users %}
-            <a href="{% url 'accounts:profile_detail' user.pk %}" class="list-group-item list-group-item-action d-flex align-items-center">
-                
-                {% if user.image %}
-                    <img src="{{ user.image.url }}" alt="{{ user.username }}'s profile picture"
-                         class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">
-                {% else %}
-                    <img src="{% static 'images/default.jpg' %}" alt="default profile picture"
-                         class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    {% if user.image %}
+                        <img src="{{ user.image.url }}" alt="{{ user.username }}'s profile picture"
+                             class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                    {% else %}
+                        <img src="{% static 'images/default.jpg' %}" alt="default profile picture"
+                             class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                    {% endif %}
+
+                    <a href="{% url 'accounts:profile_detail' user.pk %}" class="text-decoration-none text-dark fw-medium">
+                        {{ user.username }}
+                    </a>
+                </div>
+
+                {% if user.pk != request.user.pk %}
+                    <a href="{% url 'accounts:follow_user' user.pk %}" class="btn btn-sm btn-outline-primary">
+                        Follow
+                    </a>
                 {% endif %}
-                
-                {{ user.username }}
-            </a>
+            </div>
         {% endfor %}
     </div>
 </div>

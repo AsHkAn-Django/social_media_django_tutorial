@@ -3,6 +3,10 @@ from django.views import generic
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404, redirect
+from .models import Follow
+
+
 
 
 class SignUpCreateView(generic.CreateView):
@@ -42,3 +46,17 @@ class ProfileUpdateView(LoginRequiredMixin, generic.UpdateView):
         if 'password' in form.fields:
             form.fields.pop('password')  # Remove password from the form dynamically
         return form
+    
+    
+
+def follow_user(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    follower = request.user
+    
+    follower_exist = Follow.objects.filter(user=user, follower=follower)
+    if follower_exist:
+        follower_exist.delete()
+        return redirect('accounts:users')
+    Follow.objects.create(user=user, follower=follower)
+    return redirect('accounts:users')
+        

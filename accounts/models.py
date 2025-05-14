@@ -15,6 +15,7 @@ class CustomUser(AbstractUser):
     def get_absolute_url(self):
         return reverse('accounts:profile_detail', kwargs={'pk': self.pk})
     
+    
 class Follow(models.Model):
     follower = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="followings", on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="followers", on_delete=models.CASCADE)
@@ -22,5 +23,4 @@ class Follow(models.Model):
     
     def __str__(self):
         return f"{self.follower.username} followed {self.user.username}"
-
     
