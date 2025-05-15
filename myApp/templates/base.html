@@ -30,8 +30,8 @@
                     
                     {% if user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'accounts:profile_detail' request.user.pk %}">Profile</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Notifications</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Messages</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'myApp:post_list' %}">Posts</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'myApp:add_post' %}">Add a Post</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'accounts:users' %}">Users</a></li>
                     <li class="nav-item">
                         <form action="{% url 'logout' %}" method="post">
