@@ -33,6 +33,7 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'myApp:post_list' %}">Posts</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'myApp:add_post' %}">Add a Post</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'accounts:users' %}">Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'myApp:feed_post_list' %}">Feed</a></li>
                     <li class="nav-item">
                         <form action="{% url 'logout' %}" method="post">
                             {% csrf_token %}

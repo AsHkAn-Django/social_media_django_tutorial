@@ -12,7 +12,15 @@
                     by {{ post.author.username }} • {{ post.created_at|date:"M d, Y H:i" }}
                 </h6>
                 <p class="card-text mt-2">{{ post.body|linebreaks }}</p>
-                <a href="" class="btn btn-outline-danger">Like</a>
+                <a href="{% url 'myApp:like_post' post.pk %}" class="btn btn-outline-danger">
+                    
+                    {% if post.id in liked_ids %}
+                    Unlike
+                    {% else %}    
+                    Like
+                    {% endif %}             
+                </a>
+
             </div>
         </div>
     {% empty %}

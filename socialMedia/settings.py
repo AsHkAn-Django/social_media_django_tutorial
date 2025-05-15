@@ -134,6 +134,7 @@ AUTH_USER_MODEL = 'accounts.CustomUser' # this is necessary whenever you have a 
 
 LOGIN_REDIRECT_URL = 'myApp:home'
 LOGOUT_REDIRECT_URL = 'myApp:home'
+LOGIN_URL = 'login'
 
 
 AUTHENTICATION_BACKENDS = [
