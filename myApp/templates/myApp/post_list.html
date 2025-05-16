@@ -20,7 +20,7 @@
                     Like
                     {% endif %}             
                 </a>
-
+                <a href="{% url 'myApp:post_detail' post.pk %}"  class="btn btn-outline-primary">Detail</a>
             </div>
         </div>
     {% empty %}

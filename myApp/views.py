@@ -70,3 +70,11 @@ def like_post(request, pk):
 class PostDetailView(generic.DetailView):
     model = Post
     template_name = "myApp/post_detail.html"
+    
+    
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = CommentForm
+        return context
+    

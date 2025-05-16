@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <!-- Post Details -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h2 class="card-title">{{ post.title }}</h2>
+            <p class="card-text">{{ post.body }}</p>
+            <p class="text-muted mb-0">
+                <strong>Author:</strong> {{ post.author }} &nbsp;|&nbsp;
+                <strong>Date:</strong> {{ post.date|date:"F j, Y, g:i a" }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="mb-4">
+        <h4 class="mb-3">Comments ({{ post.post_comments.count }})</h4>
+
+        {% if post.post_comments.exists %}
+            <div class="list-group">
+                {% for comment in post.post_comments.all %}
+                    <div class="list-group-item">
+                        <p class="mb-1">{{ comment.body }}</p>
+                        <small class="text-muted">
+                            By {{ comment.user.username }} on {{ comment.created_at|date:"F j, Y, g:i a" }}
+                        </small>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">No comments yet. Be the first to comment!</p>
+        {% endif %}
+    </div>
+
+    <!-- Comment Form -->
+    <div class="card p-4 shadow-sm">
+        <h5 class="mb-3">Leave a Comment</h5>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <button type="submit" class="btn btn-outline-primary">Post Comment</button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}
