@@ -64,3 +64,9 @@ def like_post(request, pk):
         Like.objects.create(user=request.user, post=post)
     return redirect('myApp:post_list')
         
+
+
+
+class PostDetailView(generic.DetailView):
+    model = Post
+    template_name = "myApp/post_detail.html"

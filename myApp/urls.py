@@ -9,4 +9,6 @@ urlpatterns = [
     path('posts/', views.PostListView.as_view(), name='post_list'),
     path('posts/feed', views.FeedPostListView.as_view(), name='feed_post_list'),
     path('posts/like/<int:pk>/', views.like_post, name='like_post'),
+    path('posts/<int:pk>/', views.PostDetailView.as_view(), name='post_detail'),
+
 ]
