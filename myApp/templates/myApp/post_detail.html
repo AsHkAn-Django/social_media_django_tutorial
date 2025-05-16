@@ -39,7 +39,7 @@
     <!-- Comment Form -->
     <div class="card p-4 shadow-sm">
         <h5 class="mb-3">Leave a Comment</h5>
-        <form method="post" novalidate>
+        <form method="post" action="{% url 'myApp:add_comment' post.pk %}" novalidate>
             {% csrf_token %}
             {% bootstrap_form form %}
             <button type="submit" class="btn btn-outline-primary">Post Comment</button>

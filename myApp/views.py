@@ -2,7 +2,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 from .models import Post, Comment, Like
 from .forms import PostForm, CommentForm
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from accounts.models import Follow
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
@@ -71,10 +71,26 @@ class PostDetailView(generic.DetailView):
     model = Post
     template_name = "myApp/post_detail.html"
     
-    
-    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = CommentForm
         return context
     
+
+
+
+def add_comment(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            form.instance.user = request.user
+            form.instance.post = post
+            form.save()
+            return redirect('myApp:post_detail', pk = pk)
+        
+    else:
+        form = CommentForm()
+    return render(request, 'myApp/post_detail.html', {'post': post, 'form': form})
+        
+        
