@@ -78,15 +78,19 @@ class PostDetailView(generic.DetailView):
     
 
 
-
+@login_required
 def add_comment(request, pk):
     post = get_object_or_404(Post, pk=pk)
     if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
-            form.instance.user = request.user
-            form.instance.post = post
-            form.save()
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.user = request.user 
+            parent_id = form.cleaned_data.get('parent_id')
+            if parent_id:
+                comment.parent = Comment.objects.get(pk=parent_id)
+            comment.save()
             return redirect('myApp:post_detail', pk = pk)
         
     else:

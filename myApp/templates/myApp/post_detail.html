@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load django_bootstrap5 %}
+{% load mptt_tags %}
+
 
 {% block content %}
 <div class="container mt-5">
@@ -16,35 +18,58 @@
         </div>
     </div>
 
-    <!-- Comments Section -->
-    <div class="mb-4">
-        <h4 class="mb-3">Comments ({{ post.post_comments.count }})</h4>
-
-        {% if post.post_comments.exists %}
-            <div class="list-group">
-                {% for comment in post.post_comments.all %}
-                    <div class="list-group-item">
-                        <p class="mb-1">{{ comment.body }}</p>
-                        <small class="text-muted">
-                            By {{ comment.user.username }} on {{ comment.created_at|date:"F j, Y, g:i a" }}
-                        </small>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p class="text-muted">No comments yet. Be the first to comment!</p>
-        {% endif %}
-    </div>
-
-    <!-- Comment Form -->
-    <div class="card p-4 shadow-sm">
-        <h5 class="mb-3">Leave a Comment</h5>
-        <form method="post" action="{% url 'myApp:add_comment' post.pk %}" novalidate>
+  <!-- Comments -->
+  <h4>Comments ({{ post.post_comments.count }})</h4>
+  {% if post.post_comments.exists %}
+    <ul class="list-group">
+      {% recursetree post.post_comments.all %}
+      <li class="list-group-item">
+        <div class="comment">
+          <strong>{{ node.user.username }}</strong>
+          <small class="text-muted">at {{ node.created_at }}</small>
+          <p>{{ node.body }}</p>
+        </div>
+        <a href="#" class="reply-link" data-comment-id="{{ node.id }}">Reply</a>
+        <div id="reply-form-{{ node.id }}" style="display:none; margin-top:1rem;">
+          <form method="post" action="{% url 'myApp:add_comment' post.pk %}">
             {% csrf_token %}
-            {% bootstrap_form form %}
-            <button type="submit" class="btn btn-outline-primary">Post Comment</button>
-        </form>
-    </div>
+            <input type="hidden" name="parent_id" value="{{ node.id }}">
+            {% bootstrap_field form.body %}
+            <button type="submit" class="btn btn-sm btn-primary">Post Reply</button>
+          </form>
+        </div>
+        {% if not node.is_leaf_node %}
+          <ul class="list-group ml-4">
+            {{ children }}
+          </ul>
+        {% endif %}
+      </li>
+      {% endrecursetree %}
+    </ul>
+  {% else %}
+    <p>No comments yet.</p>
+  {% endif %}
 
-</div>
+  <!-- Top-level comment form -->
+  <div class="mt-4">
+    <h5>Leave a Comment</h5>
+    <form method="post" action="{% url 'myApp:add_comment' post.pk %}">
+      {% csrf_token %}
+      <input type="hidden" name="parent_id">
+      {% bootstrap_field form.body %}
+      <button type="submit" class="btn btn-primary">Post Comment</button>
+    </form>
+  </div>
+
+<script>
+// Simple JS to toggle reply forms
+document.querySelectorAll('.reply-link').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const id = link.getAttribute('data-comment-id');
+    const container = document.getElementById(`reply-form-${id}`);
+    container.style.display = container.style.display === 'none' ? 'block' : 'none';
+  });
+});
+</script>
 {% endblock %}
