@@ -223,3 +223,13 @@ document.querySelectorAll('.reply-link').forEach(link => {
 });
 </script>
 ```
+
+
+| Term            | Meaning                                                                 |
+|-----------------|-------------------------------------------------------------------------|
+| `node`          | The current item from the queryset (e.g., one `Comment` object)         |
+| `children`      | The rendered HTML of the node’s child elements                          |
+| `is_leaf_node`  | `True` if the node has no children (i.e., no replies)                   |
+| `recursetree`   | A Django template tag that recursively loops through the tree structure |
+| `root_nodes`    | Returns top-level items where `parent = None`                           |
+| `get_children`  | Method to return direct children of a node                              |

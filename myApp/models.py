@@ -26,6 +26,7 @@ class Comment(MPTTModel):
     post = models.ForeignKey(Post, related_name="post_comments", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+    like = models.IntegerField(default=0)
 
     class MPTTMeta:
         order_insertion_by = ['created_at']
