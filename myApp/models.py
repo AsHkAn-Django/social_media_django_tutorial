@@ -32,9 +32,9 @@ class Comment(MPTTModel):
         order_insertion_by = ['created_at']
    
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['-like']
         indexes = [
-            models.Index(fields=['-created_at'])
+            models.Index(fields=['like'])
         ]
 
     
