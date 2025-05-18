@@ -19,7 +19,11 @@ class Post(models.Model):
     
     
 class Comment(MPTTModel):
+<<<<<<< Updated upstream
     body = models.CharField(max_length=150)
+=======
+    body = models.TextField()
+>>>>>>> Stashed changes
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="user_comments", on_delete=models.CASCADE)
     post = models.ForeignKey(Post, related_name="post_comments", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
