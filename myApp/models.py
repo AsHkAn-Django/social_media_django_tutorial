@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+from mptt.models import MPTTModel, TreeForeignKey
+
 
 
 class Post(models.Model):
@@ -19,15 +21,16 @@ class Post(models.Model):
     
     
 class Comment(MPTTModel):
-<<<<<<< Updated upstream
     body = models.CharField(max_length=150)
-=======
-    body = models.TextField()
->>>>>>> Stashed changes
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="user_comments", on_delete=models.CASCADE)
     post = models.ForeignKey(Post, related_name="post_comments", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+    like = models.IntegerField(default=0)
+
+    class MPTTMeta:
+        order_insertion_by = ['created_at']
+   
     class Meta:
         ordering = ['-like']
         indexes = [
@@ -35,13 +38,8 @@ class Comment(MPTTModel):
         ]
 
     
-    class MPTTMeta:
-        order_insetion_by = ['created_at']
-    
     def __str__(self):
         return f"{self.user.username}: {self.body[:20]}"
-    
-    
 
 
 
