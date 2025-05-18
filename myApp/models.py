@@ -1,6 +1,5 @@
 from django.db import models
 from django.conf import settings
-from mptt.models import MPTTModel, TreeForeignKey
 
 
 class Post(models.Model):
@@ -19,18 +18,18 @@ class Post(models.Model):
         return self.title
     
     
-class Comment(models.Model):
-    body = models.TextField()
+class Comment(MPTTModel):
+    body = models.CharField(max_length=150)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="user_comments", on_delete=models.CASCADE)
     post = models.ForeignKey(Post, related_name="post_comments", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
     
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['-like']
         indexes = [
-            models.Index(fields=['-created_at'])
+            models.Index(fields=['like'])
         ]
+
     
     class MPTTMeta:
         order_insetion_by = ['created_at']

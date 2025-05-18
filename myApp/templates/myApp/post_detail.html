@@ -4,47 +4,117 @@
 {% block content %}
 <div class="container mt-5">
 
-    <!-- Post Details -->
-    <div class="card mb-4 shadow-sm">
-        <div class="card-body">
-            <h2 class="card-title">{{ post.title }}</h2>
-            <p class="card-text">{{ post.body }}</p>
-            <p class="text-muted mb-0">
-                <strong>Author:</strong> {{ post.author }} &nbsp;|&nbsp;
-                <strong>Date:</strong> {{ post.date|date:"F j, Y, g:i a" }}
-            </p>
-        </div>
+  <!-- Post Details -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <h2 class="card-title">{{ post.title }}</h2>
+      <p class="card-text">{{ post.body }}</p>
+      <p class="text-muted mb-0">
+        <strong>Author:</strong> {{ post.author }} &nbsp;|&nbsp;
+        <strong>Date:</strong> {{ post.date|date:"F j, Y, g:i a" }}
+      </p>
     </div>
+  </div>
 
-    <!-- Comments Section -->
-    <div class="mb-4">
-        <h4 class="mb-3">Comments ({{ post.post_comments.count }})</h4>
-
-        {% if post.post_comments.exists %}
-            <div class="list-group">
-                {% for comment in post.post_comments.all %}
-                    <div class="list-group-item">
-                        <p class="mb-1">{{ comment.body }}</p>
-                        <small class="text-muted">
-                            By {{ comment.user.username }} on {{ comment.created_at|date:"F j, Y, g:i a" }}
-                        </small>
-                    </div>
-                {% endfor %}
+  <!-- Comments -->
+  <h4>Comments ({{ post.post_comments.count }})</h4>
+  {% if parents %}
+    <ul class="list-group">
+      {% for comment in parents %}
+        <li class="list-group-item">
+          <div class="comment">
+            <div class="d-flex align-items-center mb-2">
+              <form action="{% url 'myApp:vote' comment.pk %}" method="post" class="me-1">
+                {% csrf_token %}
+                <input type="hidden" name="vote_type" value="up">
+                <button type="submit" class="btn btn-outline-success btn-sm" title="Upvote">▲</button>
+              </form>
+              <span class="badge bg-secondary me-1">{{ comment.like }}</span>
+              <form action="{% url 'myApp:vote' comment.pk %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="vote_type" value="down">
+                <button type="submit" class="btn btn-outline-danger btn-sm" title="Downvote">▼</button>
+              </form>
             </div>
-        {% else %}
-            <p class="text-muted">No comments yet. Be the first to comment!</p>
-        {% endif %}
-    </div>
+            <strong>{{ comment.user.username }}</strong>
+            <small class="text-muted">at {{ comment.created_at|date:"F j, Y, g:i a" }}</small>
+            <p>{{ comment.body }}</p>
+          </div>
 
-    <!-- Comment Form -->
-    <div class="card p-4 shadow-sm">
-        <h5 class="mb-3">Leave a Comment</h5>
-        <form method="post" action="{% url 'myApp:add_comment' post.pk %}" novalidate>
-            {% csrf_token %}
-            {% bootstrap_form form %}
-            <button type="submit" class="btn btn-outline-primary">Post Comment</button>
-        </form>
-    </div>
+          <a href="#" class="reply-link" data-comment-id="{{ comment.id }}">Reply</a>
+          <div id="reply-form-{{ comment.id }}" style="display:none; margin-top:1rem;">
+            <form method="post" action="{% url 'myApp:add_comment' post.pk %}">
+              {% csrf_token %}
+              <input type="hidden" name="parent_id" value="{{ comment.id }}">
+              {% bootstrap_field form.body %}
+              <button type="submit" class="btn btn-sm btn-primary">Post Reply</button>
+            </form>
+          </div>
+
+          {% if comment.sorted_children %}
+            <ul class="list-group ms-4">
+              {% for reply in comment.sorted_children %}
+                <li class="list-group-item">
+                  <div class="comment">
+                    <div class="d-flex align-items-center mb-2">
+                      <form action="{% url 'myApp:vote' reply.pk %}" method="post" class="me-1">
+                        {% csrf_token %}
+                        <input type="hidden" name="vote_type" value="up">
+                        <button type="submit" class="btn btn-outline-success btn-sm" title="Upvote">▲</button>
+                      </form>
+                      <span class="badge bg-secondary me-1">{{ reply.like }}</span>
+                      <form action="{% url 'myApp:vote' reply.pk %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="vote_type" value="down">
+                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Downvote">▼</button>
+                      </form>
+                    </div>
+                    <strong>{{ reply.user.username }}</strong>
+                    <small class="text-muted">at {{ reply.created_at|date:"F j, Y, g:i a" }}</small>
+                    <p>{{ reply.body }}</p>
+                  </div>
+                  <a href="#" class="reply-link" data-comment-id="{{ reply.id }}">Reply</a>
+                  <div id="reply-form-{{ reply.id }}" style="display:none; margin-top:1rem;">
+                    <form method="post" action="{% url 'myApp:add_comment' post.pk %}">
+                      {% csrf_token %}
+                      <input type="hidden" name="parent_id" value="{{ reply.id }}">
+                      {% bootstrap_field form.body %}
+                      <button type="submit" class="btn btn-sm btn-primary">Post Reply</button>
+                    </form>
+                  </div>
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No comments yet.</p>
+  {% endif %}
+
+  <!-- Top-level comment form -->
+  <div class="mt-4">
+    <h5>Leave a Comment</h5>
+    <form method="post" action="{% url 'myApp:add_comment' post.pk %}">
+      {% csrf_token %}
+      <input type="hidden" name="parent_id">
+      {% bootstrap_field form.body %}
+      <button type="submit" class="btn btn-primary">Post Comment</button>
+    </form>
+  </div>
 
 </div>
+
+<script>
+// Simple JS to toggle reply forms
+document.querySelectorAll('.reply-link').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const id = link.getAttribute('data-comment-id');
+    const container = document.getElementById(`reply-form-${id}`);
+    container.style.display = container.style.display === 'none' ? 'block' : 'none';
+  });
+});
+</script>
 {% endblock %}

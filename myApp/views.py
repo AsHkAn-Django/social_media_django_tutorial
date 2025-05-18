@@ -6,6 +6,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from accounts.models import Follow
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from mptt.templatetags.mptt_tags import cache_tree_children
+from django.db.models import Prefetch
 
 
 
@@ -67,30 +69,58 @@ def like_post(request, pk):
 
 
 
-class PostDetailView(generic.DetailView):
+class PostDetailView(LoginRequiredMixin, generic.DetailView):
     model = Post
     template_name = "myApp/post_detail.html"
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = CommentForm
+        post = self.object
+
+        # build one QuerySet with ALL comments for this post
+        all_comments = Comment.objects.filter(post=post)
+
+        # 1) Grab only top-level comments, sorted by '-like'
+        # 2) For each of those, prefetch its .children also sorted by '-like'
+        parents = (all_comments.filter(parent=None).order_by('-like')
+                   .prefetch_related(Prefetch('children',queryset=all_comments
+                                              .order_by('-like'),to_attr='sorted_children')))
+
+        context['form']    = CommentForm()
+        context['parents'] = parents
         return context
     
+    
 
-
-
+@login_required
 def add_comment(request, pk):
     post = get_object_or_404(Post, pk=pk)
     if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
-            form.instance.user = request.user
-            form.instance.post = post
-            form.save()
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.user = request.user 
+            parent_id = form.cleaned_data.get('parent_id')
+            if parent_id:
+                comment.parent = Comment.objects.get(pk=parent_id)
+            comment.save()
             return redirect('myApp:post_detail', pk = pk)
         
     else:
         form = CommentForm()
     return render(request, 'myApp/post_detail.html', {'post': post, 'form': form})
         
+
+@login_required
+def vote(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    if request.method == "POST":
+        vote_type = request.POST.get("vote_type")
         
+        if vote_type == 'up':
+            comment.like += 1
+        elif vote_type == 'down':
+            comment.like -= 1
+        comment.save()
+    return redirect('myApp:post_detail', comment.post.pk)
