@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load django_bootstrap5 %}
 
 {% block content %}
@@ -7,10 +8,23 @@
   <!-- Post Details -->
   <div class="card mb-4 shadow-sm">
     <div class="card-body">
+      <p>
+        {% if post.author.image %}
+          <a href="{% url 'accounts:profile_detail' user.pk %}">
+              <img src="{{ post.author.image.url }}" alt="{{ user.username }}'s profile picture"
+                    class="rounded-circle me-2" style="width: 36px; height: 36px; object-fit: cover;">
+          </a>
+        {% else %}
+          <a href="{% url 'accounts:profile_detail' user.pk %}">
+              <img src="{% static 'images/default.jpg' %}" alt="default profile picture"
+                    class="rounded-circle me-2" style="width: 36px; height: 36px; object-fit: cover;">
+          </a>
+        {% endif %}
+        <strong>{{ post.author }}</strong>
+      </p>
       <h2 class="card-title">{{ post.title }}</h2>
       <p class="card-text">{{ post.body }}</p>
       <p class="text-muted mb-0">
-        <strong>Author:</strong> {{ post.author }} &nbsp;|&nbsp;
         <strong>Date:</strong> {{ post.created_at|date:"F j, Y, g:i a" }}
       </p>
     </div>

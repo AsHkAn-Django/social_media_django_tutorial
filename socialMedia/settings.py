@@ -38,10 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     'django_bootstrap5',
     'mptt',
-    
+    'rest_framework',
+
     'myApp',
     'accounts',
 ]
@@ -140,7 +141,7 @@ LOGIN_URL = 'login'
 
 AUTHENTICATION_BACKENDS = [
     'accounts.backends.EmailOrUsernameModelBackend',
-    'django.contrib.auth.backends.ModelBackend',  
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 
