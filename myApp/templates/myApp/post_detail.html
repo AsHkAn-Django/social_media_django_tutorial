@@ -11,10 +11,11 @@
       <p class="card-text">{{ post.body }}</p>
       <p class="text-muted mb-0">
         <strong>Author:</strong> {{ post.author }} &nbsp;|&nbsp;
-        <strong>Date:</strong> {{ post.date|date:"F j, Y, g:i a" }}
+        <strong>Date:</strong> {{ post.created_at|date:"F j, Y, g:i a" }}
       </p>
     </div>
   </div>
+
 
   <!-- Comments -->
   <h4>Comments ({{ post.post_comments.count }})</h4>

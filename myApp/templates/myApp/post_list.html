@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container my-4">
-    <h2 class="mb-4">📃 Posts</h2>
+    <h2 class="mb-4">Posts</h2>
 
     {% for post in posts %}
         <div class="card mb-3 shadow-sm">
@@ -12,13 +12,14 @@
                     by {{ post.author.username }} • {{ post.created_at|date:"M d, Y H:i" }}
                 </h6>
                 <p class="card-text mt-2">{{ post.body|linebreaks }}</p>
+                <p>Likes❤️: {{post.total_likes}}</p>
                 <a href="{% url 'myApp:like_post' post.pk %}" class="btn btn-outline-danger">
-                    
+
                     {% if post.id in liked_ids %}
                     Unlike
-                    {% else %}    
+                    {% else %}
                     Like
-                    {% endif %}             
+                    {% endif %}
                 </a>
                 <a href="{% url 'myApp:post_detail' post.pk %}"  class="btn btn-outline-primary">Detail</a>
             </div>
