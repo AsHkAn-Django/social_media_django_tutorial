@@ -10,7 +10,16 @@ class CustomUserAdmin(UserAdmin):
     model = CustomUser
 
     fieldsets = UserAdmin.fieldsets + ((_('Additional Info'), {'fields': ('age', 'date_of_birth', 'image')}),)
-    add_fieldsets = UserAdmin.add_fieldsets + ((_('Additional Info'), {'fields': ('age', 'date_of_birth', 'image')}),)
+    add_fieldsets = (
+        (
+            None,
+            {
+                'classes': ('wide',),
+                'fields': ('username', 'email', 'password1', 'password2', 'age', 'date_of_birth', 'image'),
+            },
+        ),
+    )
+
 
     list_display = ('username', 'email', 'first_name', 'last_name', 'age', 'date_of_birth', 'is_staff')
     search_fields = ('username', 'email', 'first_name', 'last_name')
