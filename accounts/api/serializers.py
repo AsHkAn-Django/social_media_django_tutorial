@@ -4,10 +4,15 @@ from rest_framework import serializers
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
-     class Meta:
-         model = CustomUser
-         fields = ['id', 'email', 'username', 'age', 'date_of_birth', 'image']
-         read_only_fields = ['id']
+    num_of_posts = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'email', 'username', 'age', 'date_of_birth', 'image', 'num_of_posts']
+        read_only_fields = ['id', 'num_of_posts']
+
+    def get_num_of_posts(self, obj):
+        return obj.posts.count()
 
 
 class FollowSerializer(serializers.ModelSerializer):
